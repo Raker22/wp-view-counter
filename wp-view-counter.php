@@ -12,6 +12,7 @@ include_once "functions.php";
 
 add_action("wp_head", "wpvc_increment_current_post_num_views");
 add_action("wp_dashboard_setup", "wpvc_setup_dashboard");
+register_uninstall_hook(__FILE__, "wpvc_uninstall");
 
 function wpvc_increment_current_post_num_views() {
   if (is_page()) {
@@ -29,4 +30,13 @@ function wpvc_setup_dashboard() {
 
 function wpvc_display_dashboard() {
   include "dashboard.php";
+}
+
+function wpvc_uninstall() {
+  global $wpdb;
+  $wpvc_num_views_key = "wpvc_num_views";
+
+  $wpdb->delete($wpdb->postmeta, array(
+    "meta_key" => $wpvc_num_views_key
+  ));
 }
